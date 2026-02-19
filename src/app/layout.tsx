@@ -1,0 +1,31 @@
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import { MainHeader, Footer } from "@/components/layout";
+import "./globals.css";
+
+const poppins = Poppins({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
+});
+
+export const metadata: Metadata = {
+  title: "Rhyl Super Store | Your One-Stop Grocery Superstore",
+  description: "Fresh produce, beverages, pantry staples & more. Free home delivery on all orders.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={`${poppins.variable} font-sans antialiased flex flex-col min-h-screen bg-gray-50`}>
+        <MainHeader />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
