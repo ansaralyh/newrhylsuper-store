@@ -5,7 +5,7 @@ import { MapPin, Mail, Instagram, Twitter, Facebook, Linkedin, CreditCard, Truck
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a] text-gray-300 mt-auto">
+    <footer className="relative z-0 bg-[#0f172a] text-gray-300 mt-auto">
       {/* Main content */}
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">

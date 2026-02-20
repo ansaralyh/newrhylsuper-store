@@ -69,3 +69,29 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbars in header (horizontal and vertical) */
+header [class*="overflow-x-auto"],
+header [class*="overflow-y-auto"],
+header [class*="overflow-auto"],
+header [class*="overflow-x-scroll"],
+header [class*="overflow-y-scroll"] {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+header [class*="overflow-x-auto"]::-webkit-scrollbar,
+header [class*="overflow-y-auto"]::-webkit-scrollbar,
+header [class*="overflow-auto"]::-webkit-scrollbar,
+header [class*="overflow-x-scroll"]::-webkit-scrollbar,
+header [class*="overflow-y-scroll"]::-webkit-scrollbar {
+  display: none;
+}

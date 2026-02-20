@@ -1,21 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { featuredProducts } from "@/data/products";
+import { useStore } from "@/context/StoreContext";
 
 const topRatedProducts = featuredProducts
   .slice(0, 8)
   .map((p, i) => ({ ...p, rank: i + 1 }));
 
 export default function TopRatedFavorites() {
-  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useStore();
 
   return (
     <section className="bg-[#F8F8FA] py-12 md:py-16">
@@ -43,17 +39,17 @@ export default function TopRatedFavorites() {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  toggleFavorite(product.id);
+                  isInWishlist(product.id) ? removeFromWishlist(product.id) : addToWishlist(product);
                 }}
                 className={`absolute top-3 left-3 z-10 p-1.5 rounded-full transition-colors ${
-                  favorites[product.id]
+                  isInWishlist(product.id)
                     ? "text-rose-500 bg-rose-50"
                     : "text-gray-400 hover:text-rose-500 bg-white/80"
                 }`}
                 aria-label="Add to favorites"
               >
                 <Heart
-                  className={`w-4 h-4 ${favorites[product.id] ? "fill-current" : ""}`}
+                  className={`w-4 h-4 ${isInWishlist(product.id) ? "fill-current" : ""}`}
                 />
               </button>
 

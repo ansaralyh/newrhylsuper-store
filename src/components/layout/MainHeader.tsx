@@ -1,23 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import Image from "next/image";
+import { useState, useRef, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { Search, ShoppingCart, Heart, User, Menu, X, Facebook, Instagram } from "lucide-react";
 import { categoryBarItems } from "@/data/categoryBar";
+import { useStore } from "@/context/StoreContext";
 
 export default function MainHeader() {
-  const [cartCount] = useState(0);
+  const { cartCount } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useLayoutEffect(() => {
+    if (!openDropdown) return;
+    const btn = buttonRefs.current[openDropdown];
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    setDropdownPos({ top: rect.bottom + 4, left: rect.left });
+  }, [openDropdown]);
+
+  const activeItem = openDropdown ? categoryBarItems.find((i) => i.label === openDropdown) : null;
 
   return (
-    <header className="bg-white border-b shadow-sm sticky top-0 z-50">
+    <header className="bg-white border-b shadow-sm sticky top-0 z-50 overflow-visible">
       {/* Main nav row */}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4 py-4">
-          {/* Logo - Rhyl (script) + Super STORE (red) */}
-          <Link href="/" className="flex-shrink-0 flex items-center gap-1">
-            <span className="text-gray-800 font-serif italic text-xl">Rhyl</span>
+          {/* Logo - Rhyl logo image + Super Store */}
+          <Link href="/" className="flex-shrink-0 flex items-center gap-2">
+            <Image src="/rhyl-logo-new.jpeg" alt="Rhyl" width={100} height={44} className="h-11 w-auto object-contain" />
             <span className="text-red-600 font-bold text-sm uppercase tracking-wide">Super Store</span>
           </Link>
 
@@ -79,23 +95,59 @@ export default function MainHeader() {
         </div>
       </div>
 
-      {/* Category bar - Yellow */}
-      <div className="bg-amber-400 border-t border-amber-500">
-        <div className="container mx-auto px-4 overflow-x-auto">
-          <nav className="flex items-center gap-1 py-2 min-w-max">
-            {categoryBarItems.map((item) => (
-              <div key={item.label} className="group relative">
-                <Link
-                  href={item.href}
-                  className="flex items-center gap-1 px-3 py-2 text-sm font-bold text-gray-800 uppercase hover:bg-amber-500/50 rounded transition-colors"
+      {/* Category bar - Yellow with dropdowns */}
+      <div className="bg-amber-400 border-t border-amber-500 overflow-visible">
+        <div className="container mx-auto px-4 overflow-visible">
+          <div className="overflow-x-auto overflow-y-visible scrollbar-hide py-2 -mx-4 px-4">
+            <nav className="flex items-center gap-1 min-w-max">
+              {categoryBarItems.map((item) => (
+                <div
+                  key={item.label}
+                  className="group relative shrink-0"
+                  onMouseEnter={() => setOpenDropdown(item.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  {item.label}
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </Link>
-              </div>
-            ))}
-          </nav>
+                  <button
+                    ref={(el) => { buttonRefs.current[item.label] = el; }}
+                    type="button"
+                    onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
+                    className="flex items-center gap-1 px-3 py-2 text-sm font-bold text-gray-800 uppercase hover:bg-amber-500/50 rounded transition-colors w-full text-left"
+                  >
+                    {item.label}
+                    <svg className={`w-3 h-3 shrink-0 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                </div>
+              ))}
+            </nav>
+          </div>
         </div>
+
+        {/* Dropdown via portal - in front, no scroll */}
+        {typeof document !== "undefined" && activeItem && createPortal(
+          <div
+            className="fixed z-[9999] min-w-[180px]"
+            style={{ top: dropdownPos.top, left: dropdownPos.left }}
+            onMouseEnter={() => setOpenDropdown(activeItem.label)}
+            onMouseLeave={() => setOpenDropdown(null)}
+          >
+            <div className="bg-white rounded-lg shadow-xl border py-2 animate-fadeIn">
+              <Link href={activeItem.href} className="block px-4 py-2 text-sm font-medium text-gray-800 hover:bg-amber-50 border-b" onClick={() => setOpenDropdown(null)}>
+                View all {activeItem.label}
+              </Link>
+              {activeItem.subItems.map((sub) => (
+                <Link
+                  key={sub.label}
+                  href={sub.href}
+                  onClick={() => setOpenDropdown(null)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-gray-900 transition-colors whitespace-nowrap"
+                >
+                  {sub.label}
+                </Link>
+              ))}
+            </div>
+          </div>,
+          document.body
+        )}
       </div>
 
       {/* Mobile menu */}

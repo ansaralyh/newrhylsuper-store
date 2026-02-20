@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Heart, Star, Package } from "lucide-react";
+import { useStore } from "@/context/StoreContext";
 import type { Product } from "@/types";
 
 interface ProductCardProps {
@@ -11,7 +12,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [wishlisted, setWishlisted] = useState(false);
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
+  const wishlisted = isInWishlist(product.id);
   const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [imgFallbackError, setImgFallbackError] = useState(false);
@@ -54,7 +56,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={(e) => {
               e.preventDefault();
-              setWishlisted(!wishlisted);
+              wishlisted ? removeFromWishlist(product.id) : addToWishlist(product);
             }}
             className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all z-10 ${
               wishlisted
@@ -91,7 +93,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="px-4 pb-4">
         <button
           className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors duration-200"
-          onClick={(e) => e.preventDefault()}
+          onClick={(e) => {
+            e.preventDefault();
+            addToCart(product);
+          }}
         >
           <ShoppingCart className="w-4 h-4" />
           Add to Cart

@@ -21,7 +21,7 @@ export default function ProductGrid() {
   });
 
   return (
-    <section className="container mx-auto px-4 py-12 md:py-16">
+    <section className="relative z-10 container mx-auto px-4 py-12 md:py-16">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
           Popular Products
