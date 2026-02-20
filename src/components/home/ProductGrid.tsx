@@ -1,7 +1,25 @@
 import { featuredProducts } from "@/data/products";
+import { productSectionHeadings } from "@/data/productSections";
 import ProductCard from "@/components/products/ProductCard";
+import CategorySectionHeading from "./CategorySectionHeading";
+
+type GridItem =
+  | { type: "heading"; title: string; accentColor: "amber" | "teal" | "rose" | "emerald" | "blue" }
+  | { type: "product"; product: (typeof featuredProducts)[0] };
 
 export default function ProductGrid() {
+  const items: GridItem[] = [];
+  let headingIndex = 0;
+
+  featuredProducts.forEach((product, index) => {
+    if (index % 4 === 0) {
+      const heading = productSectionHeadings[headingIndex % productSectionHeadings.length];
+      items.push({ type: "heading", title: heading.title, accentColor: heading.accentColor });
+      headingIndex++;
+    }
+    items.push({ type: "product", product });
+  });
+
   return (
     <section className="container mx-auto px-4 py-12 md:py-16">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -26,9 +44,17 @@ export default function ProductGrid() {
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {featuredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {items.map((item, idx) =>
+          item.type === "heading" ? (
+            <CategorySectionHeading
+              key={`section-${idx}-${item.title}`}
+              title={item.title}
+              accentColor={item.accentColor}
+            />
+          ) : (
+            <ProductCard key={item.product.id} product={item.product} />
+          )
+        )}
       </div>
     </section>
   );

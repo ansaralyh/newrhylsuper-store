@@ -31,4 +31,6 @@ export const featuredProducts: Product[] = [
   { id: "28", name: "Bananas 1kg", price: "1.49", rating: 4.5, image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80", description: "Ripe bananas" },
   { id: "29", name: "Honey Nut Cereal 500g", price: "3.29", rating: 4.7, image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80", description: "Breakfast cereal" },
   { id: "30", name: "Tissue Rolls 12-Pack", price: "4.99", rating: 4.5, image: "https://images.unsplash.com/photo-1584568694245-f89c04c8a8f9?w=400&q=80", description: "Soft tissues" },
+  { id: "31", name: "Green Tea 20 Bags", price: "2.99", rating: 4.6, image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&q=80", description: "Organic green tea" },
+  { id: "32", name: "Honey Jar 340g", price: "4.49", rating: 4.8, image: "https://images.unsplash.com/photo-1471943311424-646960669fbd?w=400&q=80", description: "Pure organic honey" },
 ];

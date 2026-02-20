@@ -7,31 +7,24 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const slides = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1920&q=80",
-    alt: "Grocery superstore - fresh produce and vegetables",
-    title: "Fresh Produce & Vegetables",
-    subtitle: "Farm-fresh fruits and vegetables for your family",
+    title: "GROCERY",
+    title2: "GRAB",
+    subtitle: "GROCERY DELIVERY TO YOUR HOME",
+    image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80",
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=1920&q=80",
-    alt: "Supermarket beverages - soft drinks, juices",
-    title: "Beverages & Soft Drinks",
-    subtitle: "Pepsi, juices, and refreshing drinks",
+    title: "FRESH",
+    title2: "PRODUCE",
+    subtitle: "FARM-FRESH FRUITS & VEGETABLES",
+    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
   },
   {
     id: 3,
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&q=80",
-    alt: "Grocery store snacks - chips, biscuits, Lays",
-    title: "Snacks & Biscuits",
-    subtitle: "Lays, biscuits, and your favourite treats",
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1584568694245-f89c04c8a8f9?w=1920&q=80",
-    alt: "Household products - Surf detergent, cleaning",
-    title: "Household & Cleaning",
-    subtitle: "Surf detergent, soaps, and home essentials",
+    title: "COOL",
+    title2: "DRINKS",
+    subtitle: "BEVERAGES DELIVERED TO YOUR DOOR",
+    image: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=600&q=80",
   },
 ];
 
@@ -51,65 +44,82 @@ export default function HeroCarousel() {
     return () => clearInterval(timer);
   }, [next]);
 
+  const slide = slides[current];
+
   return (
-    <section className="relative w-full overflow-hidden">
-      <div className="relative h-[280px] sm:h-[350px] md:h-[450px] lg:h-[550px]">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              index === current ? "opacity-100 z-10" : "opacity-0 z-0"
-            }`}
-          >
-            <Image
-              src={slide.image}
-              alt={slide.alt}
-              fill
-              className="object-cover"
-              priority={index === 0}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 text-white">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 animate-fadeIn">
-                {slide.title}
-              </h2>
-              <p className="text-sm sm:text-base md:text-lg text-white/90">
-                {slide.subtitle}
-              </p>
-            </div>
-          </div>
-        ))}
+    <section className="relative w-full overflow-hidden bg-[#f7ba82]">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-64 h-64 opacity-20">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-blue-800/30">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            {[...Array(8)].map((_, i) => (
+              <line key={i} x1="50" y1="50" x2={50 + 40 * Math.cos((i * 45 * Math.PI) / 180)} y2={50 + 40 * Math.sin((i * 45 * Math.PI) / 180)} stroke="currentColor" strokeWidth="0.5" />
+            ))}
+          </svg>
+        </div>
+        <div className="absolute top-4 right-1/4 w-3 h-3 rounded-full bg-white/40" />
+        <div className="absolute top-20 right-1/3 w-2 h-2 rounded-full bg-white/30" />
+        <div className="absolute bottom-16 left-1/4 w-4 h-4 rounded-full bg-white/20" />
       </div>
 
-      {/* Navigation Arrows */}
+      <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20 relative">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+          {/* Left - Text */}
+          <div className="flex-1">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1e3a5f] leading-tight">
+              <span className="block">{slide.title}</span>
+              <span className="block">{slide.title2}</span>
+            </h1>
+            <p className="mt-4 text-[#1e3a5f] text-lg md:text-xl">
+              {slide.subtitle}
+            </p>
+          </div>
+
+          {/* Right - Basket/Product image */}
+          <div className="flex-1 flex justify-center lg:justify-end">
+            <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
+              <Image
+                src={slide.image}
+                alt={slide.subtitle}
+                fill
+                className="object-contain drop-shadow-2xl"
+                priority
+                unoptimized
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Carousel controls */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
-        aria-label="Previous slide"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all"
+        aria-label="Previous"
       >
-        <ChevronLeft className="w-6 h-6 text-gray-800" />
+        <ChevronLeft className="w-5 h-5 text-gray-700" />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
-        aria-label="Next slide"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all"
+        aria-label="Next"
       >
-        <ChevronRight className="w-6 h-6 text-gray-800" />
+        <ChevronRight className="w-5 h-5 text-gray-700" />
       </button>
 
-      {/* Dot Indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      {/* Pagination dots */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              index === current
-                ? "bg-white w-8"
-                : "bg-white/60 hover:bg-white/80"
+            className={`w-2.5 h-2.5 rounded-full transition-all ${
+              index === current ? "bg-white w-6" : "bg-white/60 hover:bg-white/80"
             }`}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={`Slide ${index + 1}`}
           />
         ))}
       </div>

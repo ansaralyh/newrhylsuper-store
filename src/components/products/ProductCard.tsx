@@ -14,6 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [imgFallbackError, setImgFallbackError] = useState(false);
   const rating = product.rating ?? 4.5;
 
   return (
@@ -34,6 +35,16 @@ export default function ProductCard({ product }: ProductCardProps) {
               }`}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               onError={() => setImgError(true)}
+              unoptimized
+            />
+          ) : product.image && !imgFallbackError ? (
+            <img
+              src={product.image}
+              alt={product.name}
+              className={`w-full h-full object-cover transition-transform duration-500 ${
+                hovered ? "scale-110" : "scale-100"
+              }`}
+              onError={() => setImgFallbackError(true)}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-200">
