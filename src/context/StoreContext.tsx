@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 import type { Product } from "@/types";
 
 interface CartItem extends Product {
@@ -19,11 +19,45 @@ interface StoreContextType {
   cartCount: number;
 }
 
+const CART_KEY = "rhyl_cart";
+const WISHLIST_KEY = "rhyl_wishlist";
+
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_KEY);
+      const savedWishlist = localStorage.getItem(WISHLIST_KEY);
+      if (savedCart) setCart(JSON.parse(savedCart));
+      if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+    } catch {
+      // ignore parse errors
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    } catch {
+      // ignore
+    }
+  }, [cart, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
+    } catch {
+      // ignore
+    }
+  }, [wishlist, hydrated]);
 
   const addToCart = useCallback((product: Product, quantity = 1) => {
     setCart((prev) => {

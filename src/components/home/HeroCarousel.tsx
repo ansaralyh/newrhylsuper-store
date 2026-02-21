@@ -8,17 +8,17 @@ const slides = [
   {
     id: 1,
     image: "/hero/hero-1.jpeg",
-    alt: "Super Market - Order Online",
+    alt: "Hero Image 1"
   },
   {
     id: 2,
     image: "/hero/hero-2.jpeg",
-    alt: "Grocery Shopping Super Sale",
+    alt: "Hero Image 2"
   },
   {
     id: 3,
     image: "/hero/hero-3.jpeg",
-    alt: "Superstore aisles - wide selection",
+    alt: "Hero Image 3"
   },
 ];
 
@@ -34,51 +34,54 @@ export default function HeroCarousel() {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 4500);
+    const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
   }, [next]);
 
-  const slide = slides[current];
-
   return (
-    <section className="relative w-full overflow-hidden">
-      {/* Hero image - compact size */}
-      <div className="relative w-full aspect-[3/1] min-h-[140px] md:min-h-[180px] lg:min-h-[220px]">
-        <Image
-          src={slide.image}
-          alt={slide.alt}
-          fill
-          className="object-cover"
-          priority
-          unoptimized
-          sizes="100vw"
-        />
+    <section className="relative w-full overflow-hidden bg-gray-50">
+      <div 
+        className="flex transition-transform duration-700 ease-in-out h-[300px] md:h-[400px] lg:h-[500px]"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {slides.map((slide) => (
+          <div key={slide.id} className="relative w-full h-full flex-shrink-0">
+            <Image
+              src={slide.image}
+              alt={slide.alt}
+              fill
+              className="object-cover"
+              priority
+              unoptimized
+            />
+          </div>
+        ))}
       </div>
 
       {/* Carousel controls */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all border border-white/30"
         aria-label="Previous"
       >
-        <ChevronLeft className="w-5 h-5 text-gray-700" />
+        <ChevronLeft className="w-6 h-6" />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all border border-white/30"
         aria-label="Next"
       >
-        <ChevronRight className="w-5 h-5 text-gray-700" />
+        <ChevronRight className="w-6 h-6" />
       </button>
 
       {/* Pagination dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              index === current ? "bg-white w-6" : "bg-white/60 hover:bg-white/80"
+            className={`transition-all duration-300 rounded-full ${
+              index === current ? "bg-emerald-500 w-10 h-2" : "bg-white/50 hover:bg-white w-2 h-2"
             }`}
             aria-label={`Slide ${index + 1}`}
           />

@@ -24,10 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} font-sans antialiased flex flex-col min-h-screen bg-gray-50`}>
         <Providers>
-          <PromoBar />
-          <MainHeader />
-          <main className="flex-1 relative z-10">{children}</main>
-          <Footer />
+          {children}
         </Providers>
       </body>
     </html>

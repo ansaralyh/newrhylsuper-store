@@ -1,7 +1,12 @@
 "use client";
 
+import { SessionProvider } from "next-auth/react";
 import { StoreProvider } from "@/context/StoreContext";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <StoreProvider>{children}</StoreProvider>;
+  return (
+    <SessionProvider>
+      <StoreProvider>{children}</StoreProvider>
+    </SessionProvider>
+  );
 }

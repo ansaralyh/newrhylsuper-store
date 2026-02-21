@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, User } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,22 +13,74 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
+
     if (!email || !password) {
       setError("Please fill in all required fields.");
+      setLoading(false);
       return;
     }
-    if (!isLogin && !name.trim()) {
-      setError("Please enter your name.");
-      return;
+
+    try {
+      if (isLogin) {
+        // Sign In
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (result?.error) {
+          setError("Invalid email or password.");
+        } else {
+          router.push("/");
+          router.refresh();
+        }
+      } else {
+        // Register
+        if (!name.trim()) {
+          setError("Please enter your name.");
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Auto login after registration
+          const result = await signIn("credentials", {
+            redirect: false,
+            email,
+            password,
+          });
+          if (result?.error) {
+            setError("Registration successful, but login failed. Please sign in.");
+            setIsLogin(true);
+          } else {
+            router.push("/");
+            router.refresh();
+          }
+        } else {
+          setError(data.error || "Something went wrong during registration.");
+        }
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    // Simulate auth - in production, call your API
-    localStorage.setItem("rhyl_user", JSON.stringify({ email, name: name || email }));
-    router.push("/");
-    router.refresh();
   };
 
   return (
@@ -94,9 +147,12 @@ export default function LoginPage() {
             )}
             <button
               type="submit"
-              className="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors"
+              disabled={loading}
+              className={`w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              {isLogin ? "Sign In" : "Create Account"}
+              {loading ? (isLogin ? "Signing In..." : "Creating Account...") : (isLogin ? "Sign In" : "Create Account")}
             </button>
           </form>
 
